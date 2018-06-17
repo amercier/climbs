@@ -8,6 +8,8 @@
     "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {
+    "chalk": "^2.4.1",
+    "pug": "^2.0.3",
     "server": "^1.0.18"
   },
   "devDependencies": {
