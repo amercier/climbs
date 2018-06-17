@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - --lts # LTS
+  - node # Current
+before_script: npm run lint
+cache:
+  directories:
+    - $HOME/.npm
