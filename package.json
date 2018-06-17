@@ -1,3 +1,9 @@
 {
-  "private": true
+  "private": true,
+  "scripts": {
+    "lint": "editorconfig-checker ."
+  },
+  "devDependencies": {
+    "editorconfig-checker": "^1.2.1"
+  }
 }
