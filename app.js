@@ -1,8 +1,8 @@
 const server = require('server');
 const { get } = require('server/router');
 const { render } = require('server/reply');
-const { green, magenta } = require('chalk');
-const { info } = require('./lib/log');
+const { green, magenta, red } = require('chalk');
+const { info, error } = require('./lib/log');
 const {
   requestLogMiddleware,
   headersDebugMiddleware,
@@ -25,4 +25,7 @@ module.exports = server(
 ).then(({ options }) => {
   const { port, env } = options;
   info(`Started server in ${green(env)} mode, listening on port ${magenta(port)}`);
+}).catch(({ message }) => {
+  error(`Could not start server: ${red(message)}`);
+  process.exit(1);
 });
