@@ -7,6 +7,7 @@
     "lint:md": "markdownlint -i node_modules .",
     "lint:js": "eslint --ignore-path .gitignore .",
     "lint": "npm-run-all -p lint:*",
+    "test": "jest",
     "assets:generate": "sketchtool export slices --output=public/ assets/graphics.sketch",
     "assets:favicon": "icon-gen -i public/icon.svg -o public/ -m favicon -r",
     "assets:cleanup": "rimraf public/favicon-*.png",
@@ -22,14 +23,18 @@
   },
   "devDependencies": {
     "editorconfig-checker": "^1.2.1",
-    "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jest": "^21.17.0",
+    "eslint": "^4.19.1",
     "icon-gen": "^1.2.1",
+    "jest-cli": "^23.1.0",
+    "jest": "^23.1.0",
     "markdownlint-cli": "^0.10.0",
     "nodemon": "^1.17.5",
     "npm-run-all": "^4.1.3",
     "optipng-bin": "^4.0.0",
+    "puppeteer": "^1.5.0",
     "rimraf": "^2.6.2"
   },
   "engines": {

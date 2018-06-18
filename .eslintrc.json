@@ -5,5 +5,12 @@
   },
   "extends": [
     "airbnb-base"
-  ]
+  ],
+  "overrides": [{
+    "files": ["**/*.spec.js"],
+    "plugins": ["jest"],
+    "env": {
+      "jest/globals": true
+    }
+  }]
 }
