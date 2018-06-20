@@ -17,9 +17,9 @@ const { notFoundMiddleware, errorRenderer } = require('./lib/error');
 const config = {
   public: 'public',
   log: process.env.LOG || {
-    development: 'info',
+    development: { level: 'info', displayTime: false },
     production: 'warning',
-    test: 'notice',
+    test: { level: 'notice', displayTime: false },
   }[process.env.NODE_ENV || 'development'],
 };
 

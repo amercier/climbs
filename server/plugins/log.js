@@ -1,6 +1,7 @@
 const {
   red, yellow, magenta, blue, grey, cyan, bold,
 } = require('chalk');
+const dateFormat = require('dateformat');
 const { dirname } = require('path');
 const { inspect } = require('util');
 const { separateMessageFromStack, formatStackTrace } = require('jest-message-util');
@@ -41,16 +42,17 @@ const defaults = {
   levels: ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'],
   colors: [red.bold, red, red.bold, red, magenta, yellow, blue, grey],
   inverse: [true, true],
-  separator: '•',
   labels: ['EMERG', 'ALERT', 'CRITI', 'ERROR', ' WARN', ' NOTE', ' INFO', 'DEBUG'],
+  separator: '•',
   stream: level => (level <= 4 ? process.stderr : process.stdout),
   format,
+  displayTime: true,
 };
 
 class Log {
-  constructor(level, stream = defaults.stream, options = {}) {
+  constructor(level, options = {}) {
     // Options
-    Object.assign(this, defaults, { ...options, stream });
+    Object.assign(this, defaults, options);
     this.level = this.levels.indexOf(level);
 
     // Level methods
@@ -61,12 +63,14 @@ class Log {
 
   print(level, ...args) {
     if (level <= this.level) {
+      const time = this.displayTime ? dateFormat(Date.now(), 'yyyy-mm-dd HH:MM:ss.l') : '';
       const color = this.colors[level];
       const labelColor = this.inverse[level] ? color.inverse : color;
       const label = `${this.labels[level]}`;
       const message = args.map(this.format).join(' ');
       const stream = typeof this.stream === 'function' ? this.stream(level) : this.stream;
-      stream.write(`${labelColor(label)} ${color(this.separator)} ${message}\n`);
+      const { separator } = this;
+      stream.write(`${time && grey(`${time} ${separator}`)} ${labelColor(label)} ${color(separator)} ${message}\n`);
     }
   }
 }
@@ -81,11 +85,20 @@ module.exports = {
       type: String,
       enum: Log.levels,
     },
-    report: {
-      default: process.stdout,
-    },
   },
   init: (ctx) => {
-    ctx[module.exports.name] = new Log(ctx.options.log.level, ctx.options.log.report);
+    ctx[module.exports.name] = new Log(
+      ctx.options.log.level,
+      ctx.options.log,
+    );
   },
 };
+
+Object.keys(defaults).forEach((name) => {
+  const { options } = module.exports;
+  if (!(name in options)) {
+    options[name] = {
+      default: defaults[name],
+    };
+  }
+});
