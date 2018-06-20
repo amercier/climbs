@@ -15,8 +15,8 @@
             <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
             <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="999" height="999"></rect>
         </g>
-        <g id="Logo" transform="translate(140.000000, 180.000000)" fill="#FFFFFF" stroke="#979797">
-            <path d="M621.318296,600 L532,427 L442.681704,600 L326,600 L532,201 L738,600 L621.318296,600 Z" id="Second-A" fill-opacity="0.45"></path>
+        <g id="Logo" transform="translate(110.000000, 180.000000)" fill="#FFFFFF" stroke="#979797">
+            <path d="M674.186747,600 L562.5,384 L450.813253,600 L305,600 L562.5,102 L820,600 L674.186747,600 Z" id="Second-A" fill-opacity="0.45"></path>
             <path d="M444.333333,600 L310,340 L175.666667,600 L0,600 L310,0 L620,600 L444.333333,600 Z" id="First-A"></path>
         </g>
     </g>
