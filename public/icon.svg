@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000px" height="1000px" viewBox="0 0 1000 1000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>icon</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FF7117" offset="0%"></stop>
+            <stop stop-color="#E64400" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="1000" height="1000"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Background">
+            <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="999" height="999"></rect>
+        </g>
+        <g id="Logo" transform="translate(140.000000, 180.000000)" fill="#FFFFFF" stroke="#979797">
+            <path d="M621.318296,600 L532,427 L442.681704,600 L326,600 L532,201 L738,600 L621.318296,600 Z" id="Second-A" fill-opacity="0.45"></path>
+            <path d="M444.333333,600 L310,340 L175.666667,600 L0,600 L310,0 L620,600 L444.333333,600 Z" id="First-A"></path>
+        </g>
+    </g>
+</svg>
