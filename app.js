@@ -1,38 +1,47 @@
 const server = require('server');
 const { get } = require('server/router');
 const { render } = require('server/reply');
-const { green, magenta, red } = require('chalk');
-const { info, error } = require('./lib/log');
+const { cyan, red } = require('chalk');
+const logPlugin = require('./server/plugins/log');
+
+server.plugins.push(logPlugin);
+
 const {
-  requestLogMiddleware,
-  // headersDebugMiddleware,
-  // sessionDebugMiddleware,
-  // userDebugMiddleware,
+  requestInfoMiddleware,
+  headersDebugMiddleware,
+  sessionDebugMiddleware,
+  userDebugMiddleware,
 } = require('./lib/middleware');
 const { notFoundMiddleware, errorRenderer } = require('./lib/error');
 
 const config = {
   public: 'public',
+  log: process.env.LOG || {
+    development: 'info',
+    production: 'warning',
+    test: 'notice',
+  }[process.env.NODE_ENV || 'development'],
 };
 
 const home = () => render('home.pug', { title: 'Strava Climbs' });
 const routes = [
   get('/', home),
+  get('/500', () => { throw new Error('Test error for /500'); }),
 ];
 
 module.exports = server(
   config,
-  requestLogMiddleware,
-  // headersDebugMiddleware,
-  // sessionDebugMiddleware,
-  // userDebugMiddleware,
+  requestInfoMiddleware,
+  headersDebugMiddleware,
+  sessionDebugMiddleware,
+  userDebugMiddleware,
   routes,
   notFoundMiddleware,
   errorRenderer,
-).then(({ options }) => {
+).then(({ options, log }) => {
   const { port, env } = options;
-  info(`Started server in ${green(env)} mode, listening on port ${magenta(port)}`);
+  log.info(`Started server in ${cyan(env)} mode, listening on port ${cyan(port)}`);
 }).catch(({ message }) => {
-  error(`Could not start server: ${red(message)}`);
+  process.stderr.write(`Could not start server: ${red(message)}`);
   process.exit(1);
 });
