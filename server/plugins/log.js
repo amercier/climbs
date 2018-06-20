@@ -1,7 +1,41 @@
 const {
-  red, yellow, magenta, blue, grey, cyan,
+  red, yellow, magenta, blue, grey, cyan, bold,
 } = require('chalk');
+const { dirname } = require('path');
 const { inspect } = require('util');
+const { separateMessageFromStack, formatStackTrace } = require('jest-message-util');
+
+function formatError(error) {
+  const { message, stack } = separateMessageFromStack(error.stack);
+  const stackTrace = formatStackTrace(
+    stack,
+    { rootDir: dirname(dirname(__dirname)), testMatch: [] },
+    { noStackTrace: false },
+  );
+  const indent = string => string.replace(/\n */g, '\n        ');
+  return indent(`${red(message)}\n${stackTrace}\n`);
+}
+
+function formatObject(object) {
+  const message = inspect(object, {
+    colors: true, compact: false, depth: 5, breakLength: 100,
+  });
+  const indent = string => string.replace(/\n/g, '\n        ');
+  return cyan(message.length < 200 ? message.replace(/\n */g, ' ') : indent(`\n\n${message}\n`, true));
+}
+
+function format(value) {
+  if (value instanceof Error) {
+    return formatError(value);
+  }
+  switch (typeof value) {
+    case 'object': return formatObject(value);
+    case 'string': return value;
+    case 'null': return bold(value);
+    case 'undefined': return grey(value);
+    default: return yellow(value);
+  }
+}
 
 const defaults = {
   levels: ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'],
@@ -9,21 +43,8 @@ const defaults = {
   inverse: [true, true],
   separator: '•',
   labels: ['EMERG', 'ALERT', 'CRITI', 'ERROR', ' WARN', ' NOTE', ' INFO', 'DEBUG'],
-  format(value) {
-    if (value instanceof Error) {
-      const indent = string => string.replace(/\n */g, '\n        ');
-      const message = value.message ? indent(value.message.trim()) : '<Unknown error>';
-      let stack = '';
-      if (value.stack) {
-        stack = indent(value.stack.replace(`${value}`, ''));
-      }
-      return `${red(message)}${stack && `\n${grey(stack)}\n`}`;
-    } else if (typeof value === 'object') {
-      return cyan(inspect(value));
-    }
-    return value;
-  },
   stream: level => (level <= 4 ? process.stderr : process.stdout),
+  format,
 };
 
 class Log {
