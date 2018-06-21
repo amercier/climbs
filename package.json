@@ -5,7 +5,7 @@
     "dev": "nodemon app",
     "dev:test": "npm-run-all 'test -- --watch'",
     "lint:editorconfig": "editorconfig-checker --exclude-pattern './**/*.sketch' .",
-    "lint:md": "markdownlint -i node_modules .",
+    "lint:md": "markdownlint -i coverage -i node_modules .",
     "lint:js": "eslint --ignore-path .gitignore .",
     "lint": "npm-run-all -p lint:*",
     "test": "jest",
@@ -23,6 +23,7 @@
     "server": "^1.0.18"
   },
   "devDependencies": {
+    "codecov": "^3.0.2",
     "editorconfig-checker": "^1.2.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
@@ -47,6 +48,12 @@
   },
   "engineStrict": true,
   "jest": {
-    "setupTestFrameworkScriptFile": "./.jest.js"
+    "setupTestFrameworkScriptFile": "./.jest.js",
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "html"
+    ]
   }
 }
