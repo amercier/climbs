@@ -7,10 +7,10 @@ const logPlugin = require('./server/plugins/log');
 server.plugins.push(logPlugin);
 
 const {
-  requestInfoMiddleware,
-  headersDebugMiddleware,
-  sessionDebugMiddleware,
-  userDebugMiddleware,
+  requestMiddleware,
+  headersMiddleware,
+  sessionMiddleware,
+  userMiddleware,
 } = require('./lib/middleware');
 const { notFoundMiddleware, errorRenderer } = require('./lib/error');
 
@@ -19,7 +19,7 @@ const config = {
   log: process.env.LOG || {
     development: { level: 'info', displayTime: false },
     production: 'warning',
-    test: { level: 'notice', displayTime: false },
+    test: { level: 'critical', displayTime: false },
   }[process.env.NODE_ENV || 'development'],
 };
 
@@ -31,16 +31,17 @@ const routes = [
 
 module.exports = server(
   config,
-  requestInfoMiddleware,
-  headersDebugMiddleware,
-  sessionDebugMiddleware,
-  userDebugMiddleware,
+  requestMiddleware('info'),
+  headersMiddleware('debug'),
+  sessionMiddleware('debug'),
+  userMiddleware('debug'),
   routes,
   notFoundMiddleware,
   errorRenderer,
-).then(({ options, log }) => {
-  const { port, env } = options;
-  log.info(`Started server in ${cyan(env)} mode, listening on port ${cyan(port)}`);
+).then((ctx) => {
+  const { port, env } = ctx.options;
+  ctx.log.info(`Started server in ${cyan(env)} mode, listening on port ${cyan(port)}`);
+  return ctx;
 }).catch(({ message }) => {
   process.stderr.write(`Could not start server: ${red(message)}`);
   process.exit(1);
