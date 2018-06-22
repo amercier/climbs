@@ -29,12 +29,27 @@ const routes = [
   get('/500', () => { throw new Error('Test error for /500'); }),
 ];
 
-module.exports = server(
-  config,
+const middlewares = [
   requestMiddleware('info'),
   headersMiddleware('debug'),
   sessionMiddleware('debug'),
   userMiddleware('debug'),
+];
+
+if (process.env.NODE_ENV === 'production') {
+  config.public = 'dist';
+} else {
+  const webpackCompiler = require('webpack'); // eslint-disable-line global-require, import/no-extraneous-dependencies
+  const webpackMiddleware = require('webpack-dev-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
+  const webpackConfig = require('./webpack.config'); // eslint-disable-line global-require
+  console.debug('Loading Webpack with config:', webpackConfig);
+  const { modern } = server.utils;
+  middlewares.push(modern(webpackMiddleware(webpackCompiler(webpackConfig))));
+}
+
+module.exports = server(
+  config,
+  ...middlewares,
   routes,
   notFoundMiddleware,
   errorRenderer,
@@ -43,6 +58,6 @@ module.exports = server(
   ctx.log.info(`Started server in ${cyan(env)} mode, listening on port ${cyan(port)}`);
   return ctx;
 }).catch(({ message }) => {
-  process.stderr.write(`Could not start server: ${red(message)}`);
+  process.stderr.write(`Could not start server: ${red(message)}\n`);
   process.exit(1);
 });
