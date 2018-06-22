@@ -17,11 +17,11 @@ module.exports = {
         exclude: /\/node_modules\//,
         use: ['babel-loader'],
       },
-      // CSS loading: `import 'xxx.css';`
+      // Sass compilation and loading: `import 'xxx.ccss';`
       {
-        test: /\.css$/,
+        test: /\.scss$/,
         exclude: /\/node_modules\//,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
