@@ -1,5 +1,3 @@
-const puppeteer = require('puppeteer');
-
 /**
  * Typical device specs
  */
@@ -7,6 +5,33 @@ const desktopDevice = {
   viewport: { width: 1280, height: 720 },
   userAgent: 'Puppeteer @ 1280x720',
 };
+
+/**
+ * Start a Puppeteer instance. Tries multiple times until it succeed or
+ * `maxTries` is reached. This is useful because `puppeteer.launch` randomly
+ * returns `undefined` on Travis CI.
+ * @todo Investigate Travis CI error root cause
+ *
+ * @param {object} [options={}] Puppeteer launch options
+ * @param {object} [puppeteer=require('puppeteer')] Puppeteer module
+ * @param {number} [maxRetries=5]
+ * @throws An error if `maxTries` is reached.
+ * @return {Browser} The created Puppeteer instance
+ */
+async function launchPuppeteer(
+  options = {},
+  puppeteer = require('puppeteer'), // eslint-disable-line global-require
+  maxTries = 5,
+) {
+  const tryLaunchPuppeteer = async (triesLeft) => {
+    if (triesLeft === 0) {
+      throw new Error(`Failed to launch Puppeteer after ${maxTries} retries.`);
+    }
+    const browser = await puppeteer.launch(options);
+    return browser || tryLaunchPuppeteer(triesLeft - 1);
+  };
+  return tryLaunchPuppeteer(maxTries);
+}
 
 /**
  * Open a new browser page and
@@ -45,7 +70,7 @@ describe('App', () => {
 
   beforeAll(async () => {
     server = await (require('./app')); // eslint-disable-line global-require
-    browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+    browser = await launchPuppeteer({ args: ['--no-sandbox'] });
   });
 
   afterAll(async () => {
