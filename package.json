@@ -23,6 +23,9 @@
     "server": "^1.0.18"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-loader": "^7.1.4",
     "codecov": "^3.0.2",
     "editorconfig-checker": "^1.2.1",
     "eslint": "^4.19.1",
@@ -49,8 +52,26 @@
     "npm": ">= 5"
   },
   "engineStrict": true,
+  "babel": {
+    "presets": [
+      ["env", { "modules": false }]
+    ]
+  },
+  "browserslist": [
+    "defaults"
+  ],
   "jest": {
     "setupTestFrameworkScriptFile": "./.jest.js",
+    "transformIgnorePatterns": [
+      "/node_modules/",
+      "\\.js$"
+    ],
+    "collectCoverageFrom" : [
+      "**/*.{js,mjs}",
+      "!**/{coverage,node_modules}/**",
+      "!.*.js",
+      "!*.config.js"
+    ],
     "coverageReporters": [
       "json",
       "lcov",
