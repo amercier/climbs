@@ -39,12 +39,16 @@ const middlewares = [
 if (process.env.NODE_ENV === 'production') {
   config.public = 'dist';
 } else {
-  const webpackCompiler = require('webpack'); // eslint-disable-line global-require, import/no-extraneous-dependencies
-  const webpackMiddleware = require('webpack-dev-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
+  const webpack = require('webpack'); // eslint-disable-line global-require, import/no-extraneous-dependencies
+  const webpackDevMiddleware = require('webpack-dev-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
+  const webpackHotMiddleware = require('webpack-hot-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
   const webpackConfig = require('./webpack.config'); // eslint-disable-line global-require
-  console.debug('Loading Webpack with config:', webpackConfig);
   const { modern } = server.utils;
-  middlewares.push(modern(webpackMiddleware(webpackCompiler(webpackConfig))));
+  const webpackCompiler = webpack(webpackConfig);
+  middlewares.push(
+    modern(webpackDevMiddleware(webpackCompiler)),
+    modern(webpackHotMiddleware(webpackCompiler)),
+  );
 }
 
 module.exports = server(

@@ -15,5 +15,9 @@ expect.extend({
   },
 });
 
+if (process.env.JEST_TIMEOUT) {
+  jest.setTimeout(parseInt(process.env.JEST_TIMEOUT, 10));
+}
+
 require('jest-chain');
 require('jest-extended');

@@ -1,10 +1,14 @@
 const { join, resolve } = require('path');
+const { HotModuleReplacementPlugin } = require('webpack');
 
 module.exports = {
   mode: 'development',
   context: resolve(join(__dirname, 'client')),
   entry: {
-    'app.js': './app.mjs',
+    'app.js': [
+      './app.mjs',
+      'webpack-hot-middleware/client?noInfo=true',
+    ],
   },
   output: {
     filename: '[name]',
@@ -16,6 +20,7 @@ module.exports = {
         test: /\.mjs$/,
         exclude: /\/node_modules\//,
         use: ['babel-loader'],
+        type: 'javascript/auto', // Required for module.hot.accept()
       },
       // Sass compilation and loading: `import 'xxx.scss';`
       {
@@ -26,4 +31,7 @@ module.exports = {
     ],
   },
   devtool: 'source-map',
+  plugins: [
+    new HotModuleReplacementPlugin(),
+  ],
 };
