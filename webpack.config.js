@@ -19,14 +19,19 @@ module.exports = {
       {
         test: /\.mjs$/,
         exclude: /\/node_modules\//,
-        use: ['babel-loader'],
+        use: 'babel-loader',
         type: 'javascript/auto', // Required for module.hot.accept()
       },
       // Sass compilation and loading: `import 'xxx.scss';`
       {
         test: /\.scss$/,
         exclude: /\/node_modules\//,
-        use: ['style-loader', 'css-loader?sourceMap', 'sass-loader?sourceMap'],
+        use: [
+          'style-loader',
+          'css-loader?sourceMap',
+          'sass-loader?sourceMap',
+          'postcss-loader?sourceMap',
+        ],
       },
     ],
   },
