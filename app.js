@@ -46,8 +46,13 @@ if (process.env.NODE_ENV === 'production') {
   const { modern } = server.utils;
   const webpackCompiler = webpack(webpackConfig);
   middlewares.push(
-    modern(webpackDevMiddleware(webpackCompiler)),
-    modern(webpackHotMiddleware(webpackCompiler)),
+    modern(webpackDevMiddleware(webpackCompiler, {
+      stats: 'minimal',
+      logLevel: 'warn',
+    })),
+    modern(webpackHotMiddleware(webpackCompiler, {
+      log: false,
+    })),
   );
 }
 
