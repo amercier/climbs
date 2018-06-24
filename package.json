@@ -20,7 +20,7 @@
     "dateformat": "^3.0.3",
     "jest-message-util": "^23.1.0",
     "pug": "^2.0.3",
-    "server": "^1.0.18"
+    "server": "github:amercier/server#log-instance"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

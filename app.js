@@ -2,9 +2,7 @@ const server = require('server');
 const { get } = require('server/router');
 const { render } = require('server/reply');
 const { cyan, red } = require('chalk');
-const logPlugin = require('./server/plugins/log');
-
-server.plugins.push(logPlugin);
+const Log = require('./lib/log');
 
 const {
   requestMiddleware,
@@ -14,13 +12,11 @@ const {
 } = require('./lib/middleware');
 const { notFoundMiddleware, errorRenderer } = require('./lib/error');
 
+const log = process.env.LOG ? new Log(process.env.LOG) : Log.fromEnvironment(process.env.NODE_ENV);
+
 const config = {
   public: 'public',
-  log: process.env.LOG || {
-    development: { level: 'info', displayTime: false },
-    production: 'warning',
-    test: { level: 'critical', displayTime: false },
-  }[process.env.NODE_ENV || 'development'],
+  log: { instance: log },
 };
 
 const home = () => render('home.pug', { title: 'Strava Climbs' });
@@ -67,6 +63,6 @@ module.exports = server(
   ctx.log.info(`Started server in ${cyan(env)} mode, listening on port ${cyan(port)}`);
   return ctx;
 }).catch(({ message }) => {
-  process.stderr.write(`Could not start server: ${red(message)}\n`);
+  log.critical(`Could not start server: ${red(message)}\n`);
   process.exit(1);
 });
