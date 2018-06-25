@@ -1,0 +1,6 @@
+options:
+  merge-default-rules: true
+rules:
+  property-sort-order:
+    - 2
+    - order: concentric

@@ -2,8 +2,10 @@ language: node_js
 node_js:
   - --lts # LTS
   - node # Current
+env:
+  - JEST_TIMEOUT: 30000
 before_script: npm run lint
-script: npm test -- --coverage
+script: npm test -- --coverage --ci
 after_script: codecov
 cache:
   directories:

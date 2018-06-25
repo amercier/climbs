@@ -1,29 +1,40 @@
 {
   "private": true,
   "scripts": {
-    "start": "node app",
-    "dev": "nodemon app",
+    "build": "npm-run-all build:clean build:webpack",
+    "build:clean": "rimraf dist",
+    "build:webpack": "cross-env NODE_ENV=production webpack --output-path='./dist'",
+    "start": "node server",
+    "dev": "nodemon --ext js server",
     "dev:test": "npm-run-all 'test -- --watch'",
-    "lint:editorconfig": "editorconfig-checker --exclude-pattern './**/*.sketch' .",
-    "lint:md": "markdownlint -i coverage -i node_modules .",
+    "lint:editorconfig": "editorconfig-checker --exclude-pattern './dist/**' --exclude-pattern './**/*.sketch' .",
+    "lint:md": "markdownlint -i coverage -i dist -i node_modules .",
     "lint:js": "eslint --ignore-path .gitignore .",
+    "lint:scss": "sass-lint -i 'coverage/**, dist/**, node_modules/**' '**/*.scss' -v -q",
     "lint": "npm-run-all -p lint:*",
     "test": "jest",
     "assets:generate": "sketchtool export slices --output=public/ assets/graphics.sketch",
     "assets:favicon": "icon-gen -i public/icon.svg -o public/ -m favicon -r",
     "assets:cleanup": "rimraf public/favicon-*.png",
     "assets:optimize": "optipng -o2 -strip all public/*.png",
-    "assets": "npm-run-all assets:generate assets:favicon assets:cleanup assets:optimize"
+    "assets": "npm-run-all assets:generate assets:favicon assets:cleanup assets:optimize",
+    "heroku-postbuild": "npm-run-all build"
   },
   "dependencies": {
     "chalk": "^2.4.1",
     "dateformat": "^3.0.3",
+    "express": "^4.16.3",
     "jest-message-util": "^23.1.0",
     "pug": "^2.0.3",
     "server": "^1.0.18"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
     "codecov": "^3.0.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^0.28.11",
     "editorconfig-checker": "^1.2.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
@@ -35,20 +46,60 @@
     "jest-cli": "^23.1.0",
     "jest-extended": "^0.7.2",
     "markdownlint-cli": "^0.10.0",
+    "node-sass": "^4.9.0",
     "nodemon": "^1.17.5",
     "npm-run-all": "^4.1.3",
     "optipng-bin": "^4.0.0",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-loader": "^2.1.5",
     "puppeteer": "^1.5.0",
     "rimraf": "^2.6.2",
-    "strip-ansi": "^4.0.0"
+    "rucksack-css": "^1.0.2",
+    "sass-lint": "^1.12.1",
+    "sass-loader": "^7.0.3",
+    "strip-ansi": "^4.0.0",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.12.0",
+    "webpack-assets-manifest": "^3.0.1",
+    "webpack-command": "^0.3.0",
+    "webpack-dev-middleware": "^3.1.3",
+    "webpack-hot-middleware": "^2.22.2",
+    "webpack-md5-hash": "0.0.6",
+    "webpack-plugin-hash-output": "^3.1.0"
   },
   "engines": {
     "node": ">= 8",
     "npm": ">= 5"
   },
   "engineStrict": true,
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "modules": false
+        }
+      ]
+    ]
+  },
+  "browserslist": [
+    "defaults"
+  ],
   "jest": {
+    "testEnvironment": "node",
     "setupTestFrameworkScriptFile": "./.jest.js",
+    "transformIgnorePatterns": [
+      "<rootDir>/coverage/",
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/",
+      "\\.js$"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{js,mjs}",
+      "!**/{coverage,dist,node_modules}/**",
+      "!.*.js",
+      "!*.config.js"
+    ],
     "coverageReporters": [
       "json",
       "lcov",
