@@ -1,14 +1,18 @@
 const { join, resolve } = require('path');
 const { HotModuleReplacementPlugin } = require('webpack');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
-  mode: 'development',
+  mode: isProduction ? 'production' : 'development',
   context: resolve(join(__dirname, 'client')),
   entry: {
-    'app.js': [
-      './app.mjs',
-      'webpack-hot-middleware/client?noInfo=true',
-    ],
+    'app.js':
+      [
+        './app.mjs',
+      ].concat(isProduction ? [] : [
+        'webpack-hot-middleware/client?noInfo=true',
+      ]),
   },
   output: {
     filename: '[name]',
@@ -28,15 +32,15 @@ module.exports = {
         exclude: /\/node_modules\//,
         use: [
           'style-loader',
-          'css-loader?sourceMap',
-          'sass-loader?sourceMap',
-          'postcss-loader?sourceMap',
+          `css-loader${isProduction ? '' : '?sourceMap'}`,
+          `sass-loader${isProduction ? '' : '?sourceMap'}`,
+          `postcss-loader${isProduction ? '' : '?sourceMap'}`,
         ],
       },
     ],
   },
-  devtool: 'source-map',
-  plugins: [
+  devtool: isProduction ? 'none' : 'source-map',
+  plugins: isProduction ? [] : [
     new HotModuleReplacementPlugin(),
   ],
 };

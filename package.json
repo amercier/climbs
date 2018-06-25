@@ -1,13 +1,16 @@
 {
   "private": true,
   "scripts": {
+    "build": "npm-run-all build:clean build:webpack",
+    "build:clean": "rimraf dist",
+    "build:webpack": "cross-env NODE_ENV=production webpack --output-path='./dist'",
     "start": "node app",
     "dev": "nodemon --ext js app",
     "dev:test": "npm-run-all 'test -- --watch'",
-    "lint:editorconfig": "editorconfig-checker --exclude-pattern './**/*.sketch' .",
-    "lint:md": "markdownlint -i coverage -i node_modules .",
+    "lint:editorconfig": "editorconfig-checker --exclude-pattern './dist/**' --exclude-pattern './**/*.sketch' .",
+    "lint:md": "markdownlint -i coverage -i dist -i node_modules .",
     "lint:js": "eslint --ignore-path .gitignore .",
-    "lint:scss": "sass-lint -i 'coverage/**, node_modules/**' '**/*.scss' -v -q",
+    "lint:scss": "sass-lint -i 'coverage/**, dist/**, node_modules/**' '**/*.scss' -v -q",
     "lint": "npm-run-all -p lint:*",
     "test": "jest",
     "assets:generate": "sketchtool export slices --output=public/ assets/graphics.sketch",
@@ -19,6 +22,7 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "dateformat": "^3.0.3",
+    "express": "^4.16.3",
     "jest-message-util": "^23.1.0",
     "pug": "^2.0.3",
     "server": "^1.0.18"
@@ -28,6 +32,7 @@
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.7.0",
     "codecov": "^3.0.2",
+    "cross-env": "^5.2.0",
     "css-loader": "^0.28.11",
     "editorconfig-checker": "^1.2.1",
     "eslint": "^4.19.1",
@@ -54,6 +59,7 @@
     "strip-ansi": "^4.0.0",
     "style-loader": "^0.21.0",
     "webpack": "^4.12.0",
+    "webpack-command": "^0.3.0",
     "webpack-dev-middleware": "^3.1.3",
     "webpack-hot-middleware": "^2.22.2"
   },
@@ -79,12 +85,14 @@
     "testEnvironment": "node",
     "setupTestFrameworkScriptFile": "./.jest.js",
     "transformIgnorePatterns": [
-      "/node_modules/",
+      "<rootDir>/coverage/",
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/",
       "\\.js$"
     ],
     "collectCoverageFrom": [
       "**/*.{js,mjs}",
-      "!**/{coverage,node_modules}/**",
+      "!**/{coverage,dist,node_modules}/**",
       "!.*.js",
       "!*.config.js"
     ],

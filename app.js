@@ -1,3 +1,4 @@
+const express = require('express');
 const server = require('server');
 const { get } = require('server/router');
 const { render } = require('server/reply');
@@ -18,7 +19,7 @@ const config = {
   public: 'public',
   log: process.env.LOG || {
     development: { level: 'info', displayTime: false },
-    production: 'warning',
+    production: 'info',
     test: { level: 'critical', displayTime: false },
   }[process.env.NODE_ENV || 'development'],
 };
@@ -36,14 +37,14 @@ const middlewares = [
   userMiddleware('debug'),
 ];
 
+const { modern } = server.utils;
 if (process.env.NODE_ENV === 'production') {
-  config.public = 'dist';
+  middlewares.push(modern(express.static('dist')));
 } else {
   const webpack = require('webpack'); // eslint-disable-line global-require, import/no-extraneous-dependencies
   const webpackDevMiddleware = require('webpack-dev-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
   const webpackHotMiddleware = require('webpack-hot-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
   const webpackConfig = require('./webpack.config'); // eslint-disable-line global-require
-  const { modern } = server.utils;
   const webpackCompiler = webpack(webpackConfig);
   middlewares.push(
     modern(webpackDevMiddleware(webpackCompiler, {
