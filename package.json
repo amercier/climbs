@@ -17,7 +17,8 @@
     "assets:favicon": "icon-gen -i public/icon.svg -o public/ -m favicon -r",
     "assets:cleanup": "rimraf public/favicon-*.png",
     "assets:optimize": "optipng -o2 -strip all public/*.png",
-    "assets": "npm-run-all assets:generate assets:favicon assets:cleanup assets:optimize"
+    "assets": "npm-run-all assets:generate assets:favicon assets:cleanup assets:optimize",
+    "heroku-postbuild": "npm-run-all build"
   },
   "dependencies": {
     "chalk": "^2.4.1",
