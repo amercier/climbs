@@ -3,7 +3,7 @@ const server = require('server');
 const { get } = require('server/router');
 const { render } = require('server/reply');
 const { cyan, red } = require('chalk');
-const logPlugin = require('./server/plugins/log');
+const logPlugin = require('./plugins/log');
 
 server.plugins.push(logPlugin);
 
@@ -17,6 +17,7 @@ const { notFoundMiddleware, errorRenderer } = require('./lib/error');
 
 const config = {
   public: 'public',
+  views: 'server/views',
   log: process.env.LOG || {
     development: { level: 'info', displayTime: false },
     production: 'info',
@@ -26,7 +27,7 @@ const config = {
 
 const assetPath = path => (
   process.env.NODE_ENV === 'production'
-    ? require('./dist/.assets')[path] // eslint-disable-line global-require, import/no-unresolved
+    ? require('../dist/.assets')[path] // eslint-disable-line global-require, import/no-unresolved
     : `/${path}`
 );
 
@@ -50,7 +51,7 @@ if (process.env.NODE_ENV === 'production') {
   const webpack = require('webpack'); // eslint-disable-line global-require, import/no-extraneous-dependencies
   const webpackDevMiddleware = require('webpack-dev-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
   const webpackHotMiddleware = require('webpack-hot-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
-  const webpackConfig = require('./webpack.config'); // eslint-disable-line global-require
+  const webpackConfig = require('../webpack.config'); // eslint-disable-line global-require
   const webpackCompiler = webpack(webpackConfig);
   middlewares.push(
     modern(webpackDevMiddleware(webpackCompiler, {

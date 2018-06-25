@@ -69,7 +69,7 @@ describe('App', () => {
   let browser;
 
   beforeAll(async () => {
-    server = await (require('./app')); // eslint-disable-line global-require
+    server = await (require('./index')); // eslint-disable-line global-require
     browser = await launchPuppeteer({ args: ['--no-sandbox'] });
   });
 
