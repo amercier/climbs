@@ -1,5 +1,6 @@
 const { join, resolve } = require('path');
 const { HotModuleReplacementPlugin } = require('webpack');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -7,7 +8,7 @@ module.exports = {
   mode: isProduction ? 'production' : 'development',
   context: resolve(join(__dirname, 'client')),
   entry: {
-    'app.js':
+    app:
       [
         './app.mjs',
       ].concat(isProduction ? [] : [
@@ -15,7 +16,7 @@ module.exports = {
       ]),
   },
   output: {
-    filename: '[name]',
+    filename: isProduction ? '[name].[chunkhash:7].js' : '[name].js',
   },
   module: {
     rules: [
@@ -40,7 +41,9 @@ module.exports = {
     ],
   },
   devtool: isProduction ? 'none' : 'source-map',
-  plugins: isProduction ? [] : [
+  plugins: isProduction ? [
+    new WebpackAssetsManifest({ output: '.assets.json' }),
+  ] : [
     new HotModuleReplacementPlugin(),
   ],
 };

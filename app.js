@@ -24,7 +24,13 @@ const config = {
   }[process.env.NODE_ENV || 'development'],
 };
 
-const home = () => render('home.pug', { title: 'Strava Climbs' });
+const assetPath = path => (
+  process.env.NODE_ENV === 'production'
+    ? require('./dist/.assets')[path] // eslint-disable-line global-require, import/no-unresolved
+    : `/${path}`
+);
+
+const home = () => render('home.pug', { assetPath, title: 'Strava Climbs' });
 const routes = [
   get('/', home),
   get('/500', () => { throw new Error('Test error for /500'); }),
@@ -39,7 +45,7 @@ const middlewares = [
 
 const { modern } = server.utils;
 if (process.env.NODE_ENV === 'production') {
-  middlewares.push(modern(express.static('dist')));
+  middlewares.push(modern(express.static('dist', { immutable: true, maxAge: '1y' })));
 } else {
   const webpack = require('webpack'); // eslint-disable-line global-require, import/no-extraneous-dependencies
   const webpackDevMiddleware = require('webpack-dev-middleware'); // eslint-disable-line global-require, import/no-extraneous-dependencies
