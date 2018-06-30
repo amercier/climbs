@@ -3,9 +3,7 @@ const server = require('server');
 const { get } = require('server/router');
 const { render } = require('server/reply');
 const { cyan, red } = require('chalk');
-const logPlugin = require('./plugins/log');
-
-server.plugins.push(logPlugin);
+const { fromEnv } = require('hiplog');
 
 const {
   requestMiddleware,
@@ -18,11 +16,9 @@ const { notFoundMiddleware, errorRenderer } = require('./lib/error');
 const config = {
   public: 'public',
   views: 'server/views',
-  log: process.env.LOG || {
-    development: { level: 'info', displayTime: false },
-    production: 'info',
-    test: { level: 'critical', displayTime: false },
-  }[process.env.NODE_ENV || 'development'],
+  log: {
+    instance: fromEnv(),
+  },
 };
 
 const assetPath = path => (

@@ -24,9 +24,10 @@
     "chalk": "^2.4.1",
     "dateformat": "^3.0.3",
     "express": "^4.16.3",
+    "hiplog": "file:../hiplog",
     "jest-message-util": "^23.1.0",
     "pug": "^2.0.3",
-    "server": "^1.0.18"
+    "server": "github:amercier/server#log-instance"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
